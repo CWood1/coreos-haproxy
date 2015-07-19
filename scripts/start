@@ -6,11 +6,11 @@ export ETCD_PORT=${ETCD_PORT:-4001}
 export ETCD=$HOST_IP:$ETCD_PORT
 
 echo "Loading haproxy.cfg from $ETCD"
-until confd -onetime -node $ETCD -config-file /etc/confd/conf.d/haproxy.toml > /var/log/confd.log 2>&1
+until confd -onetime -node $ETCD -config-file /etc/confd/conf.d/haproxy.toml
 do
   sleep 10
   echo -n "."
 done
 
 echo "Running confd in the background"
-confd -interval 30 -quiet -node $ETCD -config-file /etc/confd/conf.d/haproxy.toml > /var/log/confd.log 2>&1
+confd -interval 30 -quiet -node $ETCD -config-file /etc/confd/conf.d/haproxy.toml
