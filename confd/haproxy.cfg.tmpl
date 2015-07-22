@@ -45,7 +45,7 @@ backend {{base $domain}}
   option forwardfor
   {{$healthcheck := printf "/infra/haproxy/%s/healthcheck" $domain}}
   {{if exists $healthcheck}}
-    option httpchk HEAD {{getv $healthcheck}} HTTP1/1
+    option httpchk HEAD {{getv $healthcheck}} HTTP1.1
   {{end}}
   {{$servers := printf "/infra/haproxy/%s/servers/*" $domain}}
   {{range gets $servers}}
