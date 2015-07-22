@@ -41,8 +41,8 @@ backend {{base $domain}}
   balance roundrobin
   option httpclose
   option forwardfor
-  {{$servers := printf "/infra/haproxy/%s/servers" $domain}}{{range gets $servers}}
-    server {{base .Key}} {{.Value}} check
+  {{$servers := printf "/infra/haproxy/%s/servers" $domain}}{{range $server := lsdir $servers}}
+    server {{base $server}} {{printf "/infra/haproxy/%s/servers/%s" $domain $server}}
   {{end}}
 {{end}}
 
