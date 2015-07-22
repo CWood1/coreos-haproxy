@@ -31,7 +31,7 @@ frontend http
   bind *:80
 {{range $domain := lsdir "/infra/haproxy"}}
   {{$domainfull := printf "/infra/haproxy/%s/domain" $domain}}
-  acl is_{{base $domain}} hdr(host) -i {{getv $domainfull}}
+  acl is_{{base $domain}} hdr_end(host) -i {{getv $domainfull}}
 {{end}}
 {{range $domain := lsdir "/infra/haproxy"}}
   use_backend {{base $domain}} if is_{{base $domain}}
