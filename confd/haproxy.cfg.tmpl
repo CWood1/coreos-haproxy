@@ -30,7 +30,7 @@ defaults
 frontend http
   bind :80
 {{range $domain := lsdir "/infra/haproxy"}}
-  acl is_{{base $domain}} hdr(host) -i {{printf "/infra/haproxy/%s/domain" $domain}}
+  acl is_{{base $domain}} hdr(host) -i {{$domain.Value}}
 {{end}}
 {{range $domain := lsdir "/infra/haproxy"}}
   use_backend {{base $domain}} if is_{{base $domain}}
@@ -41,8 +41,8 @@ backend {{base $domain}}
   balance roundrobin
   option httpclose
   option forwardfor
-  {{$servers := printf "/infra/haproxy/%s/servers" $domain}}{{range $server := lsdir $servers}}
-    server {{base $server}} {{printf "/infra/haproxy/%s/servers/%s" $domain $server}}
+  {{$servers := printf "/infra/haproxy/%s/servers/*" $domain}}{{range gets $servers}}
+    server {{base .Key}} {{.Value}}
   {{end}}
 {{end}}
 
