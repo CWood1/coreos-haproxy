@@ -39,6 +39,7 @@ frontend http
 
 {{range $domain := lsdir "/infra/haproxy"}}
 backend {{base $domain}}
+  mode http
   balance roundrobin
   option httpclose
   option forwardfor
@@ -48,7 +49,7 @@ backend {{base $domain}}
   {{end}}
   {{$servers := printf "/infra/haproxy/%s/servers/*" $domain}}
   {{range gets $servers}}
-    server {{base .Key}} {{.Value}}
+    server {{base .Key}} {{.Value}} {{if exists $healthcheck}} check inter 2000 {{end}}
   {{end}}
 {{end}}
 
