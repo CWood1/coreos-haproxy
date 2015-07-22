@@ -44,8 +44,9 @@ backend {{base $domain}}
   option httpclose
   option forwardfor
   {{$healthcheck := printf "/infra/haproxy/%s/healthcheck" $domain}}
+  {{$domainfull := printf "/infra/haproxy/%s/domain" $domain}}
   {{if exists $healthcheck}}
-    option httpchk HEAD {{getv $healthcheck}} HTTP/1.1
+    option httpchk HEAD {{getv $healthcheck}} HTTP/1.1\r\nHost:\ {{getv $domainfull}}
   {{end}}
   {{$servers := printf "/infra/haproxy/%s/servers/*" $domain}}
   {{range gets $servers}}
