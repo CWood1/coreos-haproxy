@@ -29,26 +29,26 @@ defaults
 
 frontend http
   bind *:80
-{{range $domain := lsdir "/infra/haproxy"}}
-  {{$domainfull := printf "/infra/haproxy/%s/domain" $domain}}
+{{range $domain := lsdir "/infra/haproxy/domains"}}
+  {{$domainfull := printf "/infra/haproxy/domains/%s/domain" $domain}}
   acl is_{{base $domain}} hdr_end(host) -i {{getv $domainfull}}
 {{end}}
-{{range $domain := lsdir "/infra/haproxy"}}
+{{range $domain := lsdir "/infra/haproxy/domains"}}
   use_backend {{base $domain}} if is_{{base $domain}}
 {{end}}
 
-{{range $domain := lsdir "/infra/haproxy"}}
+{{range $domain := lsdir "/infra/haproxy/domains"}}
 backend {{base $domain}}
   mode http
   balance roundrobin
   option httpclose
   option forwardfor
-  {{$healthcheck := printf "/infra/haproxy/%s/healthcheck" $domain}}
-  {{$domainfull := printf "/infra/haproxy/%s/domain" $domain}}
+  {{$healthcheck := printf "/infra/haproxy/domains/%s/healthcheck" $domain}}
+  {{$domainfull := printf "/infra/haproxy/domains/%s/domain" $domain}}
   {{if exists $healthcheck}}
     option httpchk HEAD {{getv $healthcheck}} HTTP/1.1\r\nHost:\ {{getv $domainfull}}
   {{end}}
-  {{$servers := printf "/infra/haproxy/%s/servers/*" $domain}}
+  {{$servers := printf "/infra/haproxy/domains/%s/servers/*" $domain}}
   {{range gets $servers}}
     server {{base .Key}} {{.Value}} {{if exists $healthcheck}} check inter 2000 {{end}}
   {{end}}
@@ -61,4 +61,4 @@ listen stats :9000
   stats hide-version
   stats realm Haproxy
   stats uri /
-  stats auth webhippie:webhippie
+  stats auth {{getv "/infra/haproxy/auth/user"}}:{{getv "/infra/haproxy/auth/password"}}
