@@ -28,7 +28,7 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 
 frontend http
-  bind :80
+  bind *:80
 {{range $domain := lsdir "/infra/haproxy"}}
   {{$domainfull := printf "/infra/haproxy/%s/domain" $domain}}
   acl is_{{base $domain}} hdr(host) -i {{getv $domainfull}}
