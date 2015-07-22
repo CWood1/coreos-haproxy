@@ -42,7 +42,7 @@ backend {{base $domain}}
   balance roundrobin
   option httpclose
   option forwardfor
-  {{$healthcheck := printf "/infra/proxy/%s/healthcheck" $domain}}
+  {{$healthcheck := printf "/infra/haproxy/%s/healthcheck" $domain}}
   {{if exists $healthcheck}}
     option httpchk HEAD {{getv $healthcheck}} HTTP1/1
   {{end}}
