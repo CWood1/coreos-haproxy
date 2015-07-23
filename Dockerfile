@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-add-apt-repository ppa:vbernat/haproxy-1.5
+RUN add-apt-repository ppa:vbernat/haproxy-1.5
 RUN apt-get install wget haproxy=1.5.14-1ppa~trusty -y
 RUN rm -rf /var/lib/apt/lists/*
 
