@@ -37,6 +37,23 @@ frontend http
   use_backend {{base $domain}} if is_{{base $domain}}
 {{end}}
 
+{{if exists "/infra/haproxy/tls/key"}}
+frontend https
+  bind *:443 ssl crt {{getv "/infra/haproxy/tls/key"}}
+{{range $domain := lsdir "/infra/haproxy/domains"}}
+  {{$domaintls := printf "/infra/haproxy/domains/%s/tls" $domain}}
+  {{if exists $domaintls}}
+    {{$domainfull := printf "/infra/haproxy/domains/%s/domain" $domain}}
+    acl is_{{base $domain}} hdr_end(host) -i {{getv $domainfull}}
+  {{end}}
+{{end}}
+{{range $domain := lsdir "/infra/haproxy/domains"}}
+  {{$domaintls := printf "/infra/haproxy/domains/%s/tls" $domain}}
+  {{if exists $domaintls}}
+    use_backend {{base $domain}} if is_{{base $domain}}
+  {{end}}
+{{end}}
+
 {{range $domain := lsdir "/infra/haproxy/domains"}}
 backend {{base $domain}}
   mode http
@@ -45,6 +62,10 @@ backend {{base $domain}}
   option forwardfor
   {{$healthcheck := printf "/infra/haproxy/domains/%s/healthcheck" $domain}}
   {{$domainfull := printf "/infra/haproxy/domains/%s/domain" $domain}}
+  {{$domaintls := printf "/infra/haproxy/domains/%s/tls" $domain}}
+  {{if exists $domaintls}}
+    redirect scheme https if !{ ssl_fc }
+  {{end}}
   {{if exists $healthcheck}}
     option httpchk HEAD {{getv $healthcheck}} HTTP/1.1\r\nHost:\ {{getv $domainfull}}
   {{end}}
