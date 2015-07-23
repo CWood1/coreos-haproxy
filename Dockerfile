@@ -8,7 +8,7 @@ RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releas
 RUN chmod +x /usr/local/bin/confd
 RUN mkdir -p /etc/confd/{conf.d,templates}
 
-RUN wget -O /tmp/haproxy http://www.haproxy.org/download/1.5/src/haproxy-1.5.14.tar.gz
+RUN wget -O /tmp/haproxy-1.5.14.tar.gz http://www.haproxy.org/download/1.5/src/haproxy-1.5.14.tar.gz
 RUN tar xzvf /tmp/haproxy-1.5.14.tar.gz -C /tmp
 RUN make -C /tmp/haproxy-1.5.14 USE_OPENSSL=1
 RUN make -C /tmp/haproxy-1.5.14 install
