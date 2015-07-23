@@ -53,6 +53,7 @@ frontend https
     use_backend {{base $domain}} if is_{{base $domain}}
   {{end}}
 {{end}}
+{{end}}
 
 {{range $domain := lsdir "/infra/haproxy/domains"}}
 backend {{base $domain}}
