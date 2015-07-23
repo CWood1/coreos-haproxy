@@ -1,8 +1,10 @@
 FROM ubuntu:latest
 
+RUN apt-get update
+RUN apt-get install wget software-properties-common -y
 RUN add-apt-repository ppa:vbernat/haproxy-1.5
 RUN apt-get update
-RUN apt-get install wget haproxy=1.5.14-1ppa~trusty -y
+RUN apt-get install haproxy=1.5.14-1ppa~trusty -y
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.7.1/confd-0.7.1-linux-amd64
