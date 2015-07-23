@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 RUN apt-get update
-RUN apt-get install wget binutils -y
+RUN apt-get install wget binutils build-essential -y
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.7.1/confd-0.7.1-linux-amd64
